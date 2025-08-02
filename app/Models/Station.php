@@ -13,6 +13,5 @@ class Station extends Model
         'capacity',
         'available_batteries',
         'status',
-        'opening_hours',
     ];
 }

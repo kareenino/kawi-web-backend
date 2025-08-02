@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('capacity')->nullable();
             $table->integer('available_batteries')->default(0);
             $table->enum('status', ['active', 'inactive', 'maintenance'])->default('active');
-            $table->json('opening_hours')->nullable();
             $table->timestamps();
         });
     }

@@ -2,47 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\SwapHistory;
+use Illuminate\Http\Request;
 
 class SwapHistoryController extends Controller
 {
-    /**
-     * Show all swap history (for admin or testing).
-     */
-    public function index()
-    {
-        $histories = SwapHistory::all();
-        return response()->json($histories);
+    // get all swaphistories
+    public function index(){
+        $swaphistories = SwapHistory::all();
+        return response()->json($swaphistories, 200);
     }
 
-    /**
-     * Show swap history for a specific user.
-     */
-    public function userHistory($userId)
-    {
-        $histories = SwapHistory::where('user_id', $userId)->orderBy('swapped_at', 'desc')->get();
-        return response()->json($histories);
+    //get SwapHistory
+    public function getSwapHistory($id){
+        $swaphistory = SwapHistory::findOrFail($id);
+        return response()->json($swaphistory);
     }
 
-    /**
-     * Store a new swap history record.
-     */
-    public function store(Request $request)
-    {
+    //create swaphistory
+    public function store(Request $request){
         $validated = $request->validate([
-            'user_id' => 'required|integer',
-            'station_id' => 'required|integer',
-            'battery_count' => 'required|integer|min:1',
-            'swapped_at' => 'nullable|date',
-            'notes' => 'nullable|string',
+            'user_id'=> 'required|integer',
+            'station_id'=> 'required|integer',
+            'battery_count'=> 'required|integer',
+            'notes'=> 'required|string',
         ]);
 
-        $history = SwapHistory::create($validated);
+        $swaphistory = SwapHistory::create($validated);
 
-        return response()->json([
-            'message' => 'Swap history recorded successfully',
-            'data' => $history
-        ], 201);
+        return response()->json(
+            [
+                'message' => 'Swap History created successfully',
+                'data' => $swaphistory
+            ], 500);
+    }
+
+    //update swaphistory
+    public function updateSwapHistory($id, Request $request){
+
+        $swaphistory = SwapHistory::findOrFail($id);
+
+        $validated = $request->validate([
+             'user_id'=> 'required|integer',
+            'station_id'=> 'required|integer',
+            'battery_count'=> 'required|integer',
+            'notes'=> 'required|string',
+        ]);
+
+        $swaphistory->update($validated);
+
+        return response()->json(
+            [
+                'message' => 'Swap History updated successfully',
+                'data' => $swaphistory
+            ], 500);
+    }
+
+    //delete swaphistory
+    public function deleteSwapHistory($id){
+        {
+            $swaphistory = SwapHistory::findOrFail($id);
+            $swaphistory->delete();
+        }
+
+        return response()->json(
+            [
+                'message' => 'Swap History deleted successfully'
+            ], 500);
     }
 }

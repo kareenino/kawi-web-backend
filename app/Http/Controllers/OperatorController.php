@@ -7,60 +7,67 @@ use Illuminate\Http\Request;
 
 class OperatorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
+    // get all operators
+    public function index(){
         $operators = Operator::all();
-        return response()->json($operators);
+        return response()->json($operators, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    //get Operator
+    public function getOperator($id){
+        $operator = Operator::findOrFail($id);
+        return response()->json($operator);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    //create operator
+    public function store(Request $request){
+        $validated = $request->validate([
+            'user_id'=> 'required|integer',
+            'company_name'=> 'required|string',
+            'phone_number'=> 'required|string',
+            'region'=> 'required|string',
+        ]);
+
+        $operator = Operator::create($validated);
+
+        return response()->json(
+            [
+                'message' => 'Operator created successfully',
+                'data' => $operator
+            ], 500);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Operator $operator)
-    {
-        //
+    //update operator
+    public function updateOperator($id, Request $request){
+
+        $operator = Operator::findOrFail($id);
+
+        $validated = $request->validate([
+            'user_id'=> 'required|integer',
+            'company_name'=> 'required|string',
+            'phone_number'=> 'required|string',
+            'region'=> 'required|string',
+        ]);
+
+        $operator->update($validated);
+
+        return response()->json(
+            [
+                'message' => 'Operator updated successfully',
+                'data' => $operator
+            ], 500);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Operator $operator)
-    {
-        //
-    }
+    //delete operator
+    public function deleteOperator($id){
+        {
+            $operator = Operator::findOrFail($id);
+            $operator->delete();
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Operator $operator)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Operator $operator)
-    {
-        //
+        return response()->json(
+            [
+                'message' => 'Operator deleted successfully'
+            ], 500);
     }
 }
