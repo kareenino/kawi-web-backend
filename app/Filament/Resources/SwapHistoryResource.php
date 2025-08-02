@@ -23,7 +23,20 @@ class SwapHistoryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('user_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('station_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('battery_count')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
+                Forms\Components\Textarea::make('notes')
+                    ->columnSpanFull(),
+                Forms\Components\DateTimePicker::make('swapped_at')
+                    ->required(),
             ]);
     }
 
@@ -31,7 +44,26 @@ class SwapHistoryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('station_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('battery_count')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('swapped_at')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

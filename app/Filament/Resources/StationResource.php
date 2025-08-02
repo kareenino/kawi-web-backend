@@ -23,7 +23,24 @@ class StationResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('operator_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('address')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('capacity')
+                    ->numeric()
+                    ->default(null),
+                Forms\Components\TextInput::make('available_batteries')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                Forms\Components\TextInput::make('status')
+                    ->required(),
             ]);
     }
 
@@ -31,7 +48,28 @@ class StationResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('operator_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('capacity')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('available_batteries')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

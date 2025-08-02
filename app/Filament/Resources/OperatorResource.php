@@ -7,11 +7,13 @@ use App\Filament\Resources\OperatorResource\RelationManagers;
 use App\Models\Operator;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class OperatorResource extends Resource
 {
@@ -23,7 +25,19 @@ class OperatorResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('user_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('company_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone_number')
+                    ->tel()
+                    ->maxLength(255)
+                    ->default(null),
+                Forms\Components\TextInput::make('region')
+                    ->maxLength(255)
+                    ->default(null),
             ]);
     }
 
@@ -31,7 +45,23 @@ class OperatorResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('company_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('phone_number')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('region')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
