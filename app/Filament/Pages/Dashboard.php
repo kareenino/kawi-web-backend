@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\SwapChart;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -13,6 +14,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             StatsOverview::class,
+            SwapChart::class
         ];
     }
 }

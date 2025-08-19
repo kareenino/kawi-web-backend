@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\SwapHistoryResource\Pages;
+namespace App\Filament\Resources\UserResource\Pages;
 
-use App\Filament\Resources\SwapHistoryResource;
+use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditSwapHistory extends EditRecord
+class EditUser extends EditRecord
 {
-    protected static string $resource = SwapHistoryResource::class;
+    protected static string $resource = UserResource::class;
 
     protected function getRedirectUrl(): string
     {

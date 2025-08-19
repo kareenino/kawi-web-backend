@@ -5,13 +5,20 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StationResource\Pages;
 use App\Filament\Resources\StationResource\RelationManagers;
 use App\Models\Station;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+use Filament\Tables\Columns\TextColumn;
+
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
 
 class StationResource extends Resource
 {
@@ -19,27 +26,29 @@ class StationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Management';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('operator_id')
+                TextInput::make('operator_id')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('address')
+                TextInput::make('address')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('capacity')
+                TextInput::make('capacity')
                     ->numeric()
                     ->default(null),
-                Forms\Components\TextInput::make('available_batteries')
+                TextInput::make('available_batteries')
                     ->required()
                     ->numeric()
                     ->default(0),
-                Forms\Components\TextInput::make('status')
+                TextInput::make('status')
                     ->required(),
             ]);
     }
@@ -48,25 +57,25 @@ class StationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('operator_id')
+                TextColumn::make('operator_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('address')
+                TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('capacity')
+                TextColumn::make('capacity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('available_batteries')
+                TextColumn::make('available_batteries')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('status'),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

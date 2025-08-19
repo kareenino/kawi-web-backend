@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -20,6 +21,8 @@ class OperatorResource extends Resource
     protected static ?string $model = Operator::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Management';
 
     public static function form(Form $form): Form
     {
@@ -64,7 +67,8 @@ class OperatorResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('Company Name')
+                ->query(fn (Builder $query): Builder => $query->where('company_name', true))
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
