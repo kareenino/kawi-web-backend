@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\StationController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SwapHistoryController;
 
 use Illuminate\Http\Request;
@@ -14,6 +15,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('login', [AuthController::class, 'login']);
+
+//articles
+Route::get('articles', [ArticleController::class, 'index']);
+Route::get('article/{id}', [ArticleController::class, 'getArticle']);
+Route::post('saveArticle', [ArticleController::class, 'store']);
+Route::put('updateArticle/{id}', [ArticleController::class, 'updateArticle']);
+Route::delete('deleteArticle/{id}', [ArticleController::class, 'deleteArticle']);
 
 //stations
 Route::get('stations', [StationController::class, 'index']);
