@@ -5,6 +5,7 @@ use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\SwapHistoryController;
+use App\Http\Controllers\FAQController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('login', [AuthController::class, 'login']);
+
+//faqs
+Route::get('FAQs', [FAQController::class, 'index']);
+Route::get('FAQ/{id}', [FAQController::class, 'getFAQ']);
+Route::post('saveFAQ', [FAQController::class, 'store']);
+Route::put('updateFAQ/{id}', [FAQController::class, 'updateFAQ']);
+Route::delete('deleteFAQ/{id}', [FAQController::class, 'deleteFAQ']);
 
 //articles
 Route::get('articles', [ArticleController::class, 'index']);
