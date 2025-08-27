@@ -5,10 +5,18 @@ namespace App\Models;
 use Orchid\Filters\Types\Like;
 use Orchid\Filters\Types\Where;
 use Orchid\Filters\Types\WhereDateStartEnd;
-use Orchid\Platform\Models\User as Authenticatable;
+// use Orchid\Platform\Models\User as Authenticatable;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable;
+    use HasRoles; 
     /**
      * The attributes that are mass assignable.
      *
@@ -66,4 +74,26 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function ecoPoints()
+    {
+        return $this->hasMany(EcoPoint::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoriteStations()
+    {
+        return $this->belongsToMany(Station::class, 'favorites');
+    }
+
+
+    // public function getEcopointsBalanceAttribute(): int
+    // {
+    //     return (int) ($this->ecoPoints()->orderByDesc('id')->value('balance_after') ?? 0);
+    // }
+
 }

@@ -38,6 +38,8 @@ class FAQResource extends Resource
                         ->required(),
                     RichEditor::make('answer')
                         ->required(),
+                    TextInput::make('rating')
+                        ->required(),
                     // Toggle::make('is_published'),
                 ])
         ]);
@@ -49,6 +51,7 @@ class FAQResource extends Resource
             ->columns([
                 TextColumn::make('question')->sortable()->limit(40),
                 TextColumn::make('answer')->sortable()->limit(40),
+                TextColumn::make('rating')->sortable()->limit(40),
             ])
             ->filters([
                 //

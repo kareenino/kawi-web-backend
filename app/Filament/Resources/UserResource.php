@@ -45,13 +45,8 @@ class UserResource extends Resource
                     ->visibleOn('create'),
                 TextInput::make('role')->required(),
                 TextInput::make('phone')->required(),
+                Textarea::make('role'),
                 Textarea::make('address'),
-                Select::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                        'maintenance' => 'Maintenance',
-                    ]),
                 FileUpload::make('image')
             ]);
     }

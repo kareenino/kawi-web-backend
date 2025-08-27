@@ -14,4 +14,24 @@ class Station extends Model
         'available_batteries',
         'status',
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function operator() 
+    {
+        return $this->belongsTo(Operator::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoredBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
 }
