@@ -2,18 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\OperatorResource\Pages;
-use App\Filament\Resources\OperatorResource\RelationManagers;
-use App\Models\Operator;
 use Filament\Forms;
+use Filament\Tables;
+use App\Models\Operator;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\OperatorResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\OperatorResource\RelationManagers;
 
 
 class OperatorResource extends Resource
@@ -48,20 +49,20 @@ class OperatorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                TextColumn::make('user_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('company_name')
+                TextColumn::make('company_name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('phone_number')
+                TextColumn::make('phone_number')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('region')
+                TextColumn::make('region')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -2,35 +2,38 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ArticleResource\Pages;
-use App\Filament\Resources\ArticleResource\RelationManagers\TagsRelationManager;
-use App\Models\Article;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
-use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Str;
+use App\Models\Article;
 use Filament\Forms\Set;
-use Filament\Forms\Components\RichEditor;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
-use Filament\Tables\Columns\BooleanColumn;
+
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use App\Filament\Resources\ArticleResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use App\Filament\Resources\ArticleResource\RelationManagers\TagsRelationManager;
 
 class ArticleResource extends Resource
 {
     protected static ?string $model = Article::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-book-open';
 
     protected static ?string $navigationGroup = 'Content';
 
@@ -72,11 +75,11 @@ class ArticleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

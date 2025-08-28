@@ -2,14 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\BikeResource\Pages;
-use App\Models\Bike;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Bike;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use App\Filament\Resources\BikeResource\Pages;
 
 class BikeResource extends Resource
 {
@@ -17,58 +30,58 @@ class BikeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Bikes';
-    protected static ?string $pluralModelLabel = 'Bikes';
-    protected static ?string $modelLabel = 'Bike';
+    // protected static ?string $pluralModelLabel = 'Bikes';
+    // protected static ?string $modelLabel = 'Bike';
     protected static ?string $navigationGroup = 'Fleet';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Owner')
+            Section::make('Owner')
                 ->columns(2)
                 ->schema([
-                    Forms\Components\Select::make('user_id')
+                    Select::make('user_id')
                         ->label('User')
                         ->relationship('user', 'name')
                         ->searchable()
                         ->preload()
                         ->required(),
                 ]),
-            Forms\Components\Section::make('Identity')
+            Section::make('Identity')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\TextInput::make('plate_number')
+                    TextInput::make('plate_number')
                         ->label('Plate Number')
                         ->unique(ignoreRecord: true)
                         ->required()
                         ->maxLength(50),
-                    Forms\Components\TextInput::make('model')
+                    TextInput::make('model')
                         ->maxLength(120)
                         ->placeholder('e.g., Spiro Automax 2015'),
-                    Forms\Components\TextInput::make('year')
+                    TextInput::make('year')
                         ->numeric()
                         ->minValue(1990)
                         ->maxValue(2100),
                 ]),
-            Forms\Components\Section::make('Status & Maintenance')
+            Section::make('Status & Maintenance')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\DatePicker::make('insurance_expiry')
+                    DatePicker::make('insurance_expiry')
                         ->native(false)
                         ->label('Insurance Expiry')
                         ->placeholder('YYYY-MM-DD'),
-                    Forms\Components\DatePicker::make('last_serviced_at')
+                    DatePicker::make('last_serviced_at')
                         ->native(false)
                         ->label('Last Serviced'),
-                    Forms\Components\TextInput::make('odometer_km')
+                    TextInput::make('odometer_km')
                         ->label('Odometer (km)')
                         ->numeric()
                         ->minValue(0),
                 ]),
-            Forms\Components\Section::make('Media')
+            Section::make('Media')
                 ->columns(1)
                 ->schema([
-                    Forms\Components\FileUpload::make('photo_url')
+                    FileUpload::make('photo_url')
                         ->label('Bike Photo')
                         ->image()
                         ->directory('bikes')
@@ -83,42 +96,42 @@ class BikeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('plate_number')
+                TextColumn::make('plate_number')
                     ->label('Plate')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('model')
+                TextColumn::make('model')
                     ->toggleable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('year')
+                TextColumn::make('year')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('Owner')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('insurance_expiry')
+                TextColumn::make('insurance_expiry')
                     ->date()
                     ->label('Insurance')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('last_serviced_at')
+                TextColumn::make('last_serviced_at')
                     ->date()
                     ->label('Serviced')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('odometer_km')
+                TextColumn::make('odometer_km')
                     ->label('Odometer')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->since()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('user_id')
+                SelectFilter::make('user_id')
                     ->label('Owner')
                     ->relationship('user', 'name'),
-                Tables\Filters\TernaryFilter::make('insured')
+                TernaryFilter::make('insured')
                     ->label('Insurance Active')
                     ->trueLabel('Active / in future')
                     ->falseLabel('Expired / missing')
@@ -129,13 +142,13 @@ class BikeResource extends Resource
                     ),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

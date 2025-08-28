@@ -2,13 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PaymentResource\Pages;
-use App\Models\Payment;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Payment;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Resources\PaymentResource\Pages;
 
 class PaymentResource extends Resource
 {
@@ -23,24 +29,24 @@ class PaymentResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Who & What')
+            Section::make('Who & What')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\Select::make('user_id')
+                    Select::make('user_id')
                         ->label('User')
                         ->relationship('user', 'name')
                         ->searchable()
                         ->preload()
                         ->required(),
 
-                    Forms\Components\Select::make('swap_history_id')
+                    Select::make('swap_history_id')
                         ->label('Swap History')
                         ->relationship('swapHistory', 'id')
                         ->searchable()
                         ->preload()
                         ->nullable(),
 
-                    Forms\Components\Select::make('method')
+                    Select::make('method')
                         ->options([
                             'mpesa' => 'M-Pesa',
                             'cash'  => 'Cash',
@@ -48,15 +54,15 @@ class PaymentResource extends Resource
                         ->required(),
                 ]),
 
-            Forms\Components\Section::make('Amounts & Status')
+            Section::make('Amounts & Status')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\TextInput::make('amount')
+                    TextInput::make('amount')
                         ->numeric()
                         ->prefix('KES')
                         ->required(),
 
-                    Forms\Components\Select::make('status')
+                    Select::make('status')
                         ->options([
                             'pending'   => 'Pending',
                             'succeeded' => 'Succeeded',
@@ -66,35 +72,35 @@ class PaymentResource extends Resource
                         ->required()
                         ->default('pending'),
 
-                    Forms\Components\TextInput::make('reference')
+                    TextInput::make('reference')
                         ->label('Reference / Receipt #')
                         ->maxLength(255),
                 ]),
 
-            Forms\Components\Section::make('M-Pesa Details')
+            Section::make('M-Pesa Details')
                 ->columns(2)
                 ->schema([
-                    Forms\Components\TextInput::make('mpesa_phone')
+                    TextInput::make('mpesa_phone')
                         ->label('M-Pesa Phone (2547xxxxxxx)')
                         ->maxLength(20),
 
-                    Forms\Components\TextInput::make('mpesa_receipt')
+                    TextInput::make('mpesa_receipt')
                         ->label('M-Pesa Receipt')
                         ->maxLength(255),
 
-                    Forms\Components\TextInput::make('merchant_request_id')
+                    TextInput::make('merchant_request_id')
                         ->maxLength(255)
                         ->helperText('Returned by STK init'),
 
-                    Forms\Components\TextInput::make('checkout_request_id')
+                    TextInput::make('checkout_request_id')
                         ->maxLength(255)
                         ->helperText('Returned by STK init'),
 
-                    Forms\Components\TextInput::make('result_code')
+                    TextInput::make('result_code')
                         ->label('Result Code')
                         ->maxLength(255),
 
-                    Forms\Components\TextInput::make('result_desc')
+                    TextInput::make('result_desc')
                         ->label('Result Description')
                         ->maxLength(255),
                 ]),
@@ -105,34 +111,34 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label('#')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('User')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('swap_history_id')
+                TextColumn::make('swap_history_id')
                     ->label('Swap')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\BadgeColumn::make('method')
+                BadgeColumn::make('method')
                     ->colors([
                         'primary' => 'mpesa',
                         'success' => 'cash',
                     ])
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('amount')
+                TextColumn::make('amount')
                     ->label('Amount (KES)')
                     ->numeric(2)
                     ->sortable(),
 
-                Tables\Columns\BadgeColumn::make('status')
+                BadgeColumn::make('status')
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'succeeded',
@@ -141,19 +147,19 @@ class PaymentResource extends Resource
                     ])
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('mpesa_receipt')
+                TextColumn::make('mpesa_receipt')
                     ->label('Receipt')
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->since()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('method')
+                SelectFilter::make('method')
                     ->options(['mpesa' => 'M-Pesa', 'cash' => 'Cash']),
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         'pending'   => 'Pending',
                         'succeeded' => 'Succeeded',

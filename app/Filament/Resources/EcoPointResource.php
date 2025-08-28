@@ -2,13 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EcoPointResource\Pages;
-use App\Models\EcoPoint;
 use Filament\Forms;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\EcoPoint;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use App\Filament\Resources\EcoPointResource\Pages;
 
 class EcoPointResource extends Resource
 {
@@ -21,30 +31,30 @@ class EcoPointResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Assignment')
+            Section::make('Assignment')
                 ->columns(2)
                 ->schema([
-                    Forms\Components\Select::make('user_id')
+                    Select::make('user_id')
                         ->relationship('user', 'name')
                         ->searchable()
                         ->preload()
                         ->required(),
                 ]),
 
-            Forms\Components\Section::make('Points')
+            Section::make('Points')
                 ->columns(3)
                 ->schema([
-                    Forms\Components\TextInput::make('points_change')
+                    TextInput::make('points_change')
                         ->label('Points (+/-)')
                         ->numeric()
                         ->required(),
 
-                    Forms\Components\TextInput::make('balance_after')
+                    TextInput::make('balance_after')
                         ->helperText('Auto-calculated if left empty')
                         ->numeric()
                         ->nullable(),
 
-                    Forms\Components\TextInput::make('reason')
+                    TextInput::make('reason')
                         ->placeholder('swap_completed, bonus, adjustment')
                         ->maxLength(120),
                 ]),
@@ -55,16 +65,16 @@ class EcoPointResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('User')
                     ->searchable()
                     ->sortable(),
 
-                // Tables\Columns\BadgeColumn::make('points_change')
+                // BadgeColumn::make('points_change')
                 //     ->label('Δ Points')
                 //     ->colors([
                 //         'success' => fn ($state) => (int)$state > 0,
@@ -72,35 +82,35 @@ class EcoPointResource extends Resource
                 //     ])
                 //     ->sortable(),
 
-                Tables\Columns\TextColumn::make('balance_after')
+                TextColumn::make('balance_after')
                     ->label('Balance')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('reason')
+                TextColumn::make('reason')
                     ->limit(24)
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->since()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\Filter::make('gains')
+                Filter::make('gains')
                     ->label('Only Gains')
                     ->query(fn ($q) => $q->where('points_change', '>', 0)),
 
-                Tables\Filters\Filter::make('deductions')
+                Filter::make('deductions')
                     ->label('Only Deductions')
                     ->query(fn ($q) => $q->where('points_change', '<', 0)),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

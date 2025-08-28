@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\FavoriteResource\Pages;
-use App\Models\Favorite;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Favorite;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rule;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Resources\FavoriteResource\Pages;
 
 class FavoriteResource extends Resource
 {
@@ -24,17 +28,17 @@ class FavoriteResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Assign Favorite')
+            Section::make('Assign Favorite')
                 ->columns(2)
                 ->schema([
-                    Forms\Components\Select::make('user_id')
+                    Select::make('user_id')
                         ->label('User')
                         ->relationship('user', 'name')
                         ->searchable()
                         ->preload()
                         ->required(),
 
-                    Forms\Components\Select::make('station_id')
+                    Select::make('station_id')
                         ->label('Station')
                         ->relationship('station', 'name')
                         ->searchable()
@@ -64,31 +68,31 @@ class FavoriteResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('user.name')
+                TextColumn::make('user.name')
                     ->label('User')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('station.name')
+                TextColumn::make('station.name')
                     ->label('Station')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->since()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('user_id')
+                SelectFilter::make('user_id')
                     ->label('User')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload(),
-                Tables\Filters\SelectFilter::make('station_id')
+                SelectFilter::make('station_id')
                     ->label('Station')
                     ->relationship('station', 'name')
                     ->searchable()

@@ -15,11 +15,19 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\SwapHistoryController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+// Route::post('login', [AuthController::class, 'login']);
 
-Route::post('login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login',    [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me',      [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
 
 //favorites
 Route::get('favorites', [FavoriteController::class, 'index']);
