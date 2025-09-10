@@ -13,6 +13,10 @@ class Review extends Model
         'comment'
     ];
 
+    protected $casts = [
+        'rating' => 'float',
+    ];
+
     public function station()
     {
         return $this->belongsTo(Station::class);

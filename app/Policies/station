@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use App\Models\Station;
+
+class StationPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator')) return $user->can('stations.view');
+        return false;
+    }
+
+    public function view(User $user, Station $station): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('stations.view')
+            && $station->operator_id === $user->operator_id;
+        return false;
+    }
+
+    public function create(User $user): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('stations.create');
+        return false;
+    }
+
+    public function update(User $user, Station $station): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('stations.update')
+            && $station->operator_id === $user->operator_id;
+        return false;
+    }
+
+    public function delete(User $user, Station $station): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('stations.delete')
+            && $station->operator_id === $user->operator_id;
+        return false;
+    }
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use App\Models\Bike;
+
+class BikePolicy
+{
+    public function viewAny(User $user): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator')) return $user->can('bikes.view');
+        return false;
+    }
+
+    public function view(User $user, Bike $bike): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('bikes.view')
+            && $bike->operator_id === $user->operator_id;
+        return false;
+    }
+
+    public function create(User $user): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('bikes.create');
+        return false;
+    }
+
+    public function update(User $user, Bike $bike): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('bikes.update')
+            && $bike->operator_id === $user->operator_id;
+        return false;
+    }
+
+    public function delete(User $user, Bike $bike): bool
+    {
+        if ($user->hasRole('super-admin')) return true;
+        if ($user->hasRole('operator'))     return $user->can('bikes.delete')
+            && $bike->operator_id === $user->operator_id;
+        return false;
+    }
+}

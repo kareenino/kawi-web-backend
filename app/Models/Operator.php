@@ -12,4 +12,17 @@ class Operator extends Model
         'phone_number',
         'region',
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+    public function stations()
+    {
+        return $this->hasMany(Station::class);
+    }
+    public function bikes()
+    {
+        return $this->hasMany(Bike::class);
+    }
 }

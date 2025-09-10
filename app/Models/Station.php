@@ -20,7 +20,7 @@ class Station extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function operator() 
+    public function operator()
     {
         return $this->belongsTo(Operator::class);
     }

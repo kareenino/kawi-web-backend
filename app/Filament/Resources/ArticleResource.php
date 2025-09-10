@@ -54,7 +54,7 @@ class ArticleResource extends Resource
                         })
                         ->required(),
                     TextInput::make('slug')->required(),
-                    // SpatieMediaLibraryImageEntry::make('thumbnail')->collection('articles'),
+                    SpatieMediaLibraryImageEntry::make('thumbnail')->collection('articles'),
                     RichEditor::make('content'),
                     Toggle::make('is_published'),
                 ])

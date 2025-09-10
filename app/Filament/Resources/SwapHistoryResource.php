@@ -17,8 +17,8 @@ class SwapHistoryResource extends Resource
 {
     protected static ?string $model = SwapHistory::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
     protected static ?string $navigationGroup = 'Management';
 
     public static function form(Form $form): Form

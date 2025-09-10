@@ -26,8 +26,8 @@ class TagResource extends Resource
 {
     protected static ?string $model = Tag::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
     protected static ?string $navigationGroup = 'Content';
 
     public static function form(Form $form): Form

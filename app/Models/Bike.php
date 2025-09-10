@@ -9,12 +9,9 @@ class Bike extends Model
     protected $fillable = [
         'user_id',
         'plate_number',
-        'model',
-        'year',
+        'name',
         'insurance_expiry',
         'last_serviced_at',
-        'odometer_km',
-        'photo_url',
     ];
 
     protected $casts = [
@@ -25,5 +22,11 @@ class Bike extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // app/Models/Bike.php
+    public function operator()
+    {
+        return $this->belongsTo(Operator::class);
     }
 }

@@ -7,16 +7,20 @@ use App\Models\Bike;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use Illuminate\Support\Facades\Auth;
+// use Filament\Actions\EditAction;
+// use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
-use Filament\Actions\DeleteAction;
+// use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
@@ -55,13 +59,9 @@ class BikeResource extends Resource
                         ->unique(ignoreRecord: true)
                         ->required()
                         ->maxLength(50),
-                    TextInput::make('model')
+                    TextInput::make('name')
                         ->maxLength(120)
                         ->placeholder('e.g., Spiro Automax 2015'),
-                    TextInput::make('year')
-                        ->numeric()
-                        ->minValue(1990)
-                        ->maxValue(2100),
                 ]),
             Section::make('Status & Maintenance')
                 ->columns(3)
@@ -73,21 +73,6 @@ class BikeResource extends Resource
                     DatePicker::make('last_serviced_at')
                         ->native(false)
                         ->label('Last Serviced'),
-                    TextInput::make('odometer_km')
-                        ->label('Odometer (km)')
-                        ->numeric()
-                        ->minValue(0),
-                ]),
-            Section::make('Media')
-                ->columns(1)
-                ->schema([
-                    FileUpload::make('photo_url')
-                        ->label('Bike Photo')
-                        ->image()
-                        ->directory('bikes')
-                        ->imageEditor()
-                        ->downloadable()
-                        ->openable(),
                 ]),
         ]);
     }
@@ -100,12 +85,9 @@ class BikeResource extends Resource
                     ->label('Plate')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('model')
+                TextColumn::make('name')
                     ->toggleable()
                     ->searchable(),
-                TextColumn::make('year')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.name')
                     ->label('Owner')
                     ->searchable()
@@ -117,10 +99,6 @@ class BikeResource extends Resource
                 TextColumn::make('last_serviced_at')
                     ->date()
                     ->label('Serviced')
-                    ->sortable(),
-                TextColumn::make('odometer_km')
-                    ->label('Odometer')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -136,9 +114,9 @@ class BikeResource extends Resource
                     ->trueLabel('Active / in future')
                     ->falseLabel('Expired / missing')
                     ->queries(
-                        true: fn (Builder $q) => $q->whereDate('insurance_expiry', '>=', now()->toDateString()),
-                        false: fn (Builder $q) => $q->whereNull('insurance_expiry')->orWhereDate('insurance_expiry', '<', now()->toDateString()),
-                        blank: fn (Builder $q) => $q,
+                        true: fn(Builder $q) => $q->whereDate('insurance_expiry', '>=', now()->toDateString()),
+                        false: fn(Builder $q) => $q->whereNull('insurance_expiry')->orWhereDate('insurance_expiry', '<', now()->toDateString()),
+                        blank: fn(Builder $q) => $q,
                     ),
             ])
             ->actions([
@@ -162,4 +140,18 @@ class BikeResource extends Resource
             'edit'   => Pages\EditBike::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+{
+    $query = parent::getEloquentQuery();
+
+    $user = Auth::user();
+
+    if ($user && $user->hasRole('operator')) {
+        $query->where('operator_id', $user->operator_id);
+    }
+
+    return $query;
+}
+
 }

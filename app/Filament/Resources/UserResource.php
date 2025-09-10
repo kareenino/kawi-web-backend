@@ -18,7 +18,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
-
+use Filament\Tables\Columns\TextColumn;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -27,7 +28,7 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'Management';
-    
+
     public static function getNavigationLabel(): string
     {
         return 'Users';
@@ -43,11 +44,13 @@ class UserResource extends Resource
                     ->required()
                     ->readOnly()
                     ->visibleOn('create'),
-                TextInput::make('role')->required(),
                 TextInput::make('phone')->required(),
-                Textarea::make('role'),
+                Select::make('role')
+                    ->label('Role')
+                    ->options(Role::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
                 Textarea::make('address'),
-                FileUpload::make('image')
             ]);
     }
 
@@ -55,45 +58,36 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('role')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('image')
-                    ->numeric()
-                    ->sortable(),
-                // Tables\Columns\TextColumn::make('email_verified_at')
-                //     ->numeric()
-                //     ->sortable(),
-                Tables\Columns\TextColumn::make('roles.name')
+                TextColumn::make('roleName.name')
                     ->label('Role')
                     ->badge()
                     ->color('primary'),
-                // Tables\Columns\TextColumn::make('password')
+                TextColumn::make('status')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('phone')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('address')
+                    ->numeric()
+                    ->sortable(),
+                // TextColumn::make('password')
                 //     ->dateTime()
                 //     ->sortable(),
-                // Tables\Columns\TextColumn::make('remember_token')
+                // TextColumn::make('remember_token')
                 //     ->dateTime()
                 //     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

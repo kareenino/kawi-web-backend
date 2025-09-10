@@ -19,30 +19,30 @@ use Filament\Forms\Set;
 use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\IconColumn;
 
 class FAQResource extends Resource
 {
     protected static ?string $model = FAQ::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
-
     protected static ?string $navigationGroup = 'Content';
 
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Section::make()
-                ->schema([
-                    TextInput::make('question')
-                        ->required(),
-                    RichEditor::make('answer')
-                        ->required(),
-                    TextInput::make('rating')
-                        ->required(),
-                    // Toggle::make('is_published'),
-                ])
-        ]);
+            ->schema([
+                Section::make()
+                    ->schema([
+                        TextInput::make('question')
+                            ->required(),
+                        RichEditor::make('answer')
+                            ->required(),
+                        // Toggle::make('is_published')
+                        // ->default(false),
+                    ])
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -51,7 +51,9 @@ class FAQResource extends Resource
             ->columns([
                 TextColumn::make('question')->sortable()->limit(40),
                 TextColumn::make('answer')->sortable()->limit(40),
-                TextColumn::make('rating')->sortable()->limit(40),
+                // IconColumn::make('is_published'),
+
+
             ])
             ->filters([
                 //

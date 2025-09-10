@@ -11,12 +11,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    use HasRoles; 
+    use HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -55,11 +56,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $allowedFilters = [
-           'id'         => Where::class,
-           'name'       => Like::class,
-           'email'      => Like::class,
-           'updated_at' => WhereDateStartEnd::class,
-           'created_at' => WhereDateStartEnd::class,
+        'id'         => Where::class,
+        'name'       => Like::class,
+        'email'      => Like::class,
+        'updated_at' => WhereDateStartEnd::class,
+        'created_at' => WhereDateStartEnd::class,
     ];
 
     /**
@@ -74,6 +75,8 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    protected string $guard_name = 'web';
 
     public function ecoPoints()
     {
@@ -90,7 +93,20 @@ class User extends Authenticatable
         return $this->belongsToMany(Station::class, 'favorites');
     }
 
+    public function bike()
+    {
+        return $this->hasOne(Bike::class);
+    }
 
+    public function operator()
+    {
+        return $this->belongsTo(Operator::class);
+    }
+
+    public function roleName()
+    {
+        return $this->belongsTo(Role::class, 'role');
+    }
     // public function getEcopointsBalanceAttribute(): int
     // {
     //     return (int) ($this->ecoPoints()->orderByDesc('id')->value('balance_after') ?? 0);

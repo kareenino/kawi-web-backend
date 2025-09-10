@@ -24,6 +24,7 @@ class EcoPointResource extends Resource
 {
     protected static ?string $model = EcoPoint::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon  = 'heroicon-o-sparkles';
     protected static ?string $navigationGroup = 'Loyalty';
     protected static ?string $navigationLabel = 'EcoPoints';
@@ -73,14 +74,6 @@ class EcoPointResource extends Resource
                     ->label('User')
                     ->searchable()
                     ->sortable(),
-
-                // BadgeColumn::make('points_change')
-                //     ->label('Δ Points')
-                //     ->colors([
-                //         'success' => fn ($state) => (int)$state > 0,
-                //         'danger'  => fn ($state) => (int)$state < 0,
-                //     ])
-                //     ->sortable(),
 
                 TextColumn::make('balance_after')
                     ->label('Balance')

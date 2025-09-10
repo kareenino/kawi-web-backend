@@ -13,6 +13,7 @@ use App\Http\Controllers\StationController;
 use App\Http\Controllers\EcopointController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\StationReviewController;
 use App\Http\Controllers\SwapHistoryController;
 
 // Route::get('/user', function (Request $request) {
@@ -23,11 +24,14 @@ use App\Http\Controllers\SwapHistoryController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
+// Protected (token required)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me',      [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
+    Route::get('/me',     [AuthController::class, 'me']);
+    Route::post('/logout',[AuthController::class, 'logout']);
 
+Route::post('/stations/{station}/reviews', [StationReviewController::class, 'store']);
+
+});
 
 //favorites
 Route::get('favorites', [FavoriteController::class, 'index']);
@@ -52,17 +56,21 @@ Route::delete('deletePayment/{id}', [PaymentController::class, 'deletePayment'])
 
 //bikes
 Route::get('bikes', [BikeController::class, 'index']);
-Route::get('bike/{id}', [BikeController::class, 'getBike']);
+Route::get('/bikes/{id}', [BikeController::class, 'getBike'])
+     ->whereNumber('id');
 Route::post('saveBike', [BikeController::class, 'store']);
 Route::put('updateBike/{id}', [BikeController::class, 'updateBike']);
 Route::delete('deleteBike/{id}', [BikeController::class, 'deleteBike']);
 
+Route::get('/users/{user}/bike', [BikeController::class, 'showForUser'])
+    ->whereNumber('user');
+
 //faqs
-Route::get('FAQs', [FAQController::class, 'index']);
-Route::get('FAQ/{id}', [FAQController::class, 'getFAQ']);
-Route::post('saveFAQ', [FAQController::class, 'store']);
-Route::put('updateFAQ/{id}', [FAQController::class, 'updateFAQ']);
-Route::delete('deleteFAQ/{id}', [FAQController::class, 'deleteFAQ']);
+Route::get('faqs', [FAQController::class, 'index']);
+Route::get('faq/{id}', [FAQController::class, 'getFaq']);
+Route::post('saveFaq', [FAQController::class, 'store']);
+Route::put('updateFaq/{id}', [FAQController::class, 'updateFaq']);
+Route::delete('deleteFaq/{id}', [FAQController::class, 'deleteFaq']);
 
 //reviews
 Route::get('reviews', [ReviewController::class, 'index']);
@@ -70,6 +78,9 @@ Route::get('review/{id}', [ReviewController::class, 'getReview']);
 Route::post('saveReview', [ReviewController::class, 'store']);
 Route::put('updateReview/{id}', [ReviewController::class, 'updateReview']);
 Route::delete('deleteReview/{id}', [ReviewController::class, 'deleteReview']);
+
+//reviews by station
+Route::get('/stations/{station}/reviews', [StationReviewController::class, 'index']);
 
 //articles
 Route::get('articles', [ArticleController::class, 'index']);
@@ -98,3 +109,6 @@ Route::get('swaphistory/{id}', [SwapHistoryController::class, 'getSwaphistory'])
 Route::post('saveSwaphistory', [SwapHistoryController::class, 'store']);
 Route::put('updateSwaphistory/{id}', [SwapHistoryController::class, 'updateSwaphistory']);
 Route::delete('deleteSwaphistory/{id}', [SwapHistoryController::class, 'deleteSwaphistory']);
+
+//for testing
+Route::get('/ping', fn() => response()->json(['ok' => true]));

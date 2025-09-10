@@ -19,6 +19,7 @@ class FavoriteResource extends Resource
 {
     protected static ?string $model = Favorite::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon  = 'heroicon-o-heart';
     protected static ?string $navigationGroup = 'Engagement';
     protected static ?string $navigationLabel = 'Favorites';
