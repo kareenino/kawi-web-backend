@@ -5,9 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ReviewResource\Pages;
 use App\Models\Review;
 use DeepCopy\Filter\Filter;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -51,7 +51,7 @@ class ReviewResource extends Resource
 
                     Textarea::make('rating')
                         ->label('Rating')
-                        ->min(1)->max(5)->step(1)
+                        // ->min(1)->max(5)->step(1)
                         ->required(),
 
                     Textarea::make('comment')
