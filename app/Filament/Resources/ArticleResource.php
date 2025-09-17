@@ -34,7 +34,6 @@ class ArticleResource extends Resource
     protected static ?string $model = Article::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-book-open';
-
     protected static ?string $navigationGroup = 'Content';
 
     public static function form(Form $form): Form
@@ -54,7 +53,6 @@ class ArticleResource extends Resource
                         })
                         ->required(),
                     TextInput::make('slug')->required(),
-                    SpatieMediaLibraryImageEntry::make('thumbnail')->collection('articles'),
                     RichEditor::make('content'),
                     Toggle::make('is_published'),
                 ])
@@ -69,7 +67,6 @@ class ArticleResource extends Resource
                 TextColumn::make('title')->sortable()->limit(50),
                 TextColumn::make('slug')->sortable()->limit(50),
                 IconColumn::make('is_published'),
-                SpatieMediaLibraryImageColumn::make('thumbnail')->collection('posts')
             ])
             ->filters([
                 //

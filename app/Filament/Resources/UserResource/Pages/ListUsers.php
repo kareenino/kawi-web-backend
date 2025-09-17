@@ -12,6 +12,7 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        // Important: Use the built-in CreateAction (no custom URL to auth user)
         return [
             Actions\CreateAction::make(),
         ];

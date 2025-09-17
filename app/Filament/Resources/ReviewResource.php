@@ -67,20 +67,24 @@ class ReviewResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('station.name')
-                    ->label('Station')->sortable()->searchable(),
+                    ->label('Station')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('user.name')
                     ->label('User')->sortable()->searchable(),
                 TextColumn::make('rating')
                     ->badge()
-                    ->color(fn ($state) => $state >= 4 ? 'success' : ($state == 3 ? 'warning' : 'danger'))
+                    ->color(fn($state) => $state >= 4 ? 'success' : ($state == 3 ? 'warning' : 'danger'))
                     ->sortable(),
                 TextColumn::make('comment')
                     ->limit(60)
                     ->toggleable(),
                 TextColumn::make('created_at')
-                    ->since() // “2 hours ago”
+                    ->since()
                     ->sortable()
                     ->toggleable(),
             ])

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bike;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
 
 class BikeController extends Controller
 {
@@ -84,43 +86,39 @@ class BikeController extends Controller
             500
         );
     }
-
-    // GET /api/bike/{userId}
-    // public function showByUserId(int $userId)
-    // {
-    //     $bike = Bike::where('user_id', $userId)->first();
-
-    //     if (!$bike) {
-    //         // choose the shape you prefer: 404 or empty object
-    //         return response()->json(['message' => 'Bike not found'], 404);
-    //     }
-
-    //     return response()->json([
-    //         'id'               => $bike->id,
-    //         'user_id'          => $bike->user_id,
-    //         'name'             => $bike->name,
-    //         'plate_number'     => $bike->plate_number,
-    //         'insurance_expiry' => optional($bike->insurance_expiry)->toISOString(),
-    //         'last_serviced_at' => optional($bike->last_serviced_at)->toISOString(),
-    //     ]);
-    // }
-
-    // (Recommended RESTful alternative) GET /api/users/{user}/bike
-    public function showForUser(User $user)
+    public function showForUser(Request $request, User $user)
     {
-        $bike = $user->bike;
+        // Authorize without using $user->id
+        if (!$request->user()->is($user)) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
 
+        $bike = $user->bike()->first();
         if (!$bike) {
             return response()->json(['message' => 'Bike not found'], 404);
         }
 
-        return response()->json([
-            'id'               => $bike->id,
-            'user_id'          => $bike->user_id,
-            'name'             => $bike->name,
-            'plate_number'     => $bike->plate_number,
-            'insurance_expiry' => optional($bike->insurance_expiry)->toISOString(),
-            'last_serviced_at' => optional($bike->last_serviced_at)->toISOString(),
+        // Return the model directly; no manual array touching id fields
+        return response()->json(['data' => $bike], 200);
+    }
+
+    public function storeForUser(Request $request, User $user)
+    {
+        if (!$request->user()->is($user)) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if ($user->bike()->exists()) {
+            return response()->json(['message' => 'User already has a bike'], 409);
+        }
+
+        $validated = $request->validate([
+            'name'         => ['required', 'string', 'max:255'],
+            'plate_number' => ['required', 'string', 'max:50', Rule::unique('bikes', 'plate_number')],
         ]);
+
+        $bike = $user->bike()->create($validated);
+
+        return response()->json(['data' => $bike], 201);
     }
 }

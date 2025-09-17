@@ -27,10 +27,12 @@ Route::post('/login',    [AuthController::class, 'login']);
 // Protected (token required)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me',     [AuthController::class, 'me']);
-    Route::post('/logout',[AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::post('/stations/{station}/reviews', [StationReviewController::class, 'store']);
-
+    Route::post('/stations/{station}/reviews', [StationReviewController::class, 'store']);
+    Route::get('/users/{user}/bike', [BikeController::class, 'showForUser'])
+        ->whereNumber('user');
+    Route::post('/users/{user}/bike', [BikeController::class, 'storeForUser']);
 });
 
 //favorites
@@ -57,13 +59,12 @@ Route::delete('deletePayment/{id}', [PaymentController::class, 'deletePayment'])
 //bikes
 Route::get('bikes', [BikeController::class, 'index']);
 Route::get('/bikes/{id}', [BikeController::class, 'getBike'])
-     ->whereNumber('id');
+    ->whereNumber('id');
 Route::post('saveBike', [BikeController::class, 'store']);
 Route::put('updateBike/{id}', [BikeController::class, 'updateBike']);
 Route::delete('deleteBike/{id}', [BikeController::class, 'deleteBike']);
 
-Route::get('/users/{user}/bike', [BikeController::class, 'showForUser'])
-    ->whereNumber('user');
+
 
 //faqs
 Route::get('faqs', [FAQController::class, 'index']);

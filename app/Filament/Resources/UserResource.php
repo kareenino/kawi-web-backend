@@ -5,52 +5,62 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-
-use Filament\Tables;
-use Filament\Tables\Table;
-
+use DeepCopy\Filter\Filter;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Spatie\Permission\Models\Role;
+use Filament\Tables\Table;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
     protected static ?string $navigationGroup = 'Management';
 
-    public static function getNavigationLabel(): string
-    {
-        return 'Users';
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('email')->required(),
-                TextInput::make('password')
+                TextInput::make('name')
                     ->required()
-                    ->readOnly()
-                    ->visibleOn('create'),
-                TextInput::make('phone')->required(),
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('password')
+                    ->password()
+                    ->required()
+                    ->maxLength(255),
                 Select::make('role')
                     ->label('Role')
-                    ->options(Role::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
-                Textarea::make('address'),
+                    ->relationship('roleName', 'name')
+                    ->searchable(),
+                Select::make('operator_id')
+                    ->label('Operator')
+                    ->relationship('operator', 'company_name')
+                    ->preload(),
+                TextInput::make('status')
+                    ->maxLength(255)
+                    ->default(null),
+                TextInput::make('phone')
+                    ->tel()
+                    ->maxLength(255)
+                    ->default(null),
+                TextInput::make('address')
+                    ->maxLength(255)
+                    ->default(null),
             ]);
     }
 
@@ -58,31 +68,22 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('operator_id')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('name')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('email')
+                    ->searchable(),
+                TextColumn::make('role')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('roleName.name')
-                    ->label('Role')
-                    ->badge()
-                    ->color('primary'),
                 TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('phone')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable(),
                 TextColumn::make('address')
-                    ->numeric()
-                    ->sortable(),
-                // TextColumn::make('password')
-                //     ->dateTime()
-                //     ->sortable(),
-                // TextColumn::make('remember_token')
-                //     ->dateTime()
-                //     ->sortable(),
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -95,13 +96,14 @@ class UserResource extends Resource
             ->filters([
                 //
             ])
-            // ->filtersFormColumns(3)
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
