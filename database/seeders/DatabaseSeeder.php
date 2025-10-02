@@ -29,9 +29,9 @@ class DatabaseSeeder extends Seeder
             // StationSeeder::class,
             // ReviewSeeder::class,
             // BikeSeeder::class,
-            // PaymentSeeder::class,
+            PaymentSeeder::class,
             // EcoPointsSeeder::class,
-            FavoritesSeeder::class,
+            // FavoritesSeeder::class,
         ]);
     }
 }

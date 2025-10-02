@@ -9,7 +9,11 @@ class SwapHistory extends Model
     protected $fillable = [
         'user_id',
         'station_id',
+        'bike_id',
+        'operator_id',
         'battery_count',
+        'price',
+        'status',
         'notes',
         'swapped_at'
     ];

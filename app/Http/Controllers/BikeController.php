@@ -86,10 +86,34 @@ class BikeController extends Controller
             500
         );
     }
+    // New: delegate “me” routes to existing logic
+    public function showForUserSelf(Request $request)
+    {
+        $auth = $request->user();
+        if (!$auth) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        // Re-use showForUser by binding the $auth user
+        return $this->showForUser($request, $auth);
+    }
+
+    public function storeForUserSelf(Request $request)
+    {
+        $auth = $request->user();
+        if (!$auth) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        return $this->storeForUser($request, $auth);
+    }
+
+    // Existing: GET /users/{user}/bike
     public function showForUser(Request $request, User $user)
     {
-        // Authorize without using $user->id
-        if (!$request->user()->is($user)) {
+        $auth = $request->user();
+        if (!$auth) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        if (!$auth->is($user)) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -98,13 +122,25 @@ class BikeController extends Controller
             return response()->json(['message' => 'Bike not found'], 404);
         }
 
-        // Return the model directly; no manual array touching id fields
-        return response()->json(['data' => $bike], 200);
+        // ✅ Return keys that match your Flutter model
+        return response()->json([
+            'data' => [
+                'name'               => $bike->name,
+                'plate_number'       => $bike->plate_number,
+                'insurance_expiry'   => optional($bike->insurance_expiry)->toISOString(), // Carbon|null
+                'last_serviced_at'   => optional($bike->last_serviced_at)->toISOString(), // Carbon|null
+            ],
+        ], 200);
     }
 
+    // Existing: POST /users/{user}/bike
     public function storeForUser(Request $request, User $user)
     {
-        if (!$request->user()->is($user)) {
+        $auth = $request->user();
+        if (!$auth) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        if (!$auth->is($user)) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -112,13 +148,23 @@ class BikeController extends Controller
             return response()->json(['message' => 'User already has a bike'], 409);
         }
 
+        // ✅ accept optional dates
         $validated = $request->validate([
-            'name'         => ['required', 'string', 'max:255'],
-            'plate_number' => ['required', 'string', 'max:50', Rule::unique('bikes', 'plate_number')],
+            'name'               => ['required', 'string', 'max:255'],
+            'plate_number'       => ['required', 'string', 'max:50', Rule::unique('bikes', 'plate_number')],
+            'insurance_expiry'   => ['nullable', 'date'],
+            'last_serviced_at'   => ['nullable', 'date'],
         ]);
 
         $bike = $user->bike()->create($validated);
 
-        return response()->json(['data' => $bike], 201);
+        return response()->json([
+            'data' => [
+                'name'               => $bike->name,
+                'plate_number'       => $bike->plate_number,
+                'insurance_expiry'   => optional($bike->insurance_expiry)->toISOString(),
+                'last_serviced_at'   => optional($bike->last_serviced_at)->toISOString(),
+            ],
+        ], 201);
     }
 }

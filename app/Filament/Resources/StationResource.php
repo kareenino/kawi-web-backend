@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\StationExporter;
 use App\Filament\Resources\StationResource\Pages;
 use App\Filament\Resources\StationResource\RelationManagers;
 use App\Models\Station;
@@ -12,6 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
+
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -56,6 +61,7 @@ class StationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
@@ -83,12 +89,17 @@ class StationResource extends Resource
             ->filters([
                 //
             ])
+            // ->headerActions([
+            // ExportAction::make()
+            //     ->exporter(StationExporter::class),
+            // ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ExportAction::make(),
                 ]),
             ]);
     }
